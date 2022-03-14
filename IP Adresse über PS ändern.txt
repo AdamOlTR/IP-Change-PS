@@ -1,0 +1,13 @@
+Get-NetAdapter
+
+##Die Spalte ifIndex liefert dazu das passende Ergebnis. Jetzt lässt sich der DHCP Dienst deaktivieren.
+Set-NetIPInterface -interfaceIndex 10 -dhcp -Disabled
+
+##Anschließend kann jetzt eine neue Adresse eingestellt werden. Dazu wird natürlich die gewünschte Adresse benötigt. Beachte aber, dass damit noch keine DNS-Adresse sowie Standardgateway eingestellt wurde. Der Wert Prefixlength steht dabei für die Subnetzmaske. Bei der PowerShell wird diese allerdings mit der CIDR Notation angegeben.
+New-NetIPAddress -Interfacindex 10 -IPAddress 172.16.1.254 -Prefixlength 16
+
+##Zu guter Letzt könnte man auch noch die IP-Adresse für den DNS-Dienst sowie die IP-Adresse für den Standardgateway einstellen. Für das Einstellen der DNS-Adresse gibt es das folgende Cmdlet.
+Set-DnsClientServerAddress -InterfaceIndex 6 -ServerAddresses 172.16.1.1
+
+##Möchte man eine Gateway-Adresse mit angeben, so man dies direkt mit dem obigen Commandlet – New-NetIPAddress – erledigen. Man hängt im Prinzip einen weiteren Parameter mit DefaultGateway an.
+New-NetIPAddress -Interfacindex 10 -IPAddress 172.16.1.254 -Prefixlength 16 -DefaultGateway 172.16.1.1
